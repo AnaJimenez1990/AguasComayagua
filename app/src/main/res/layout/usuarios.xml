@@ -13,10 +13,10 @@
             android:id="@+id/textView6"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Busqueda"
+            android:text="Cuenta"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            tools:layout_editor_absoluteX="19dp"
-            tools:layout_editor_absoluteY="80dp" />
+            tools:layout_editor_absoluteX="34dp"
+            tools:layout_editor_absoluteY="88dp" />
 
         <EditText
             android:id="@+id/editText6"
@@ -41,14 +41,14 @@
             android:layout_height="47dp"
             android:text="Lista de Clientes"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            tools:layout_editor_absoluteX="69dp"
-            tools:layout_editor_absoluteY="16dp" />
+            tools:layout_editor_absoluteX="61dp"
+            tools:layout_editor_absoluteY="3dp" />
 
         <ListView
             android:layout_width="373dp"
             android:layout_height="533dp"
-            tools:layout_editor_absoluteX="5dp"
-            tools:layout_editor_absoluteY="132dp" />
+            tools:layout_editor_absoluteX="6dp"
+            tools:layout_editor_absoluteY="120dp" />
 
     </android.support.constraint.ConstraintLayout>
 </LinearLayout>
