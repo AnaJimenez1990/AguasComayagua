@@ -12,8 +12,25 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <!-- SERVICIO DE AUTENTICACIÓN -->
+                <service android:name=".sync.AuthenticationService">
+                    <intent-filter>
+                        <action android:name="android.accounts.AccountAuthenticator" />
+                    </intent-filter>
+
+                    <meta-data
+                        android:name="android.accounts.AccountAuthenticator"
+                        android:resource="@xml/authenticator" />
+
+                    <!-- Sincronización -->
+                    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+                    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+
+                </service>
+
             </intent-filter>
         </activity>
     </application>
