@@ -14,7 +14,7 @@ public class facturacion {
      * Autoridad del Content Provider
      */
     public final static String AUTHORITY
-            = "com.herprogramacion.crunch_expenses";
+            = "com.example.informatica2.aguascomayagua";
     /**
      * Representación de la tabla a consultar
      */

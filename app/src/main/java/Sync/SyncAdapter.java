@@ -23,13 +23,13 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.gson.Gson;
-import com.herprogramacion.crunch_expenses.utils.Utilidades;
-import com.herprogramacion.crunch_expenses.utils.Constantes;
-import com.herprogramacion.crunch_expenses.R;
-import com.herprogramacion.crunch_expenses.provider.ContractParaGastos;
-import com.herprogramacion.crunch_expenses.web.Gasto;
-import com.herprogramacion.crunch_expenses.web.VolleySingleton;
+import com.google.gson.gson;
+import com.example.informatica2.aguascomayagua.utils.Utilidades;
+import com.example.informatica2.aguascomayagua.utils.Constantes;
+import com.example.informatica2.aguascomayagua.R;
+import provider.facturacion;
+import web.Facturacion;
+import web.VolleySingleton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,8 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import provider.facturacion;
-import web.Facturacion;
+
 
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
@@ -50,13 +49,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = SyncAdapter.class.getSimpleName();
 
     ContentResolver resolver;
-    private Gson gson = new Gson();
+   // private gson gson = new gson();
 
     /**
      * Proyección para las consultas
      */
     private static final String[] PROJECTION = new String[]{
-                    facturacion.Columnas._ID ,
+                    facturacion.Columnas.id ,
                     facturacion.Columnas.recibo,
                     facturacion.Columnas.fecha,
                     facturacion.Columnas.vence,
@@ -70,12 +69,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     };
 
     // Indices para las columnas indicadas en la proyección
-    public static final int COLUMNA_ID = 0;
-    public static final int COLUMNA_ID_REMOTA = 1;
-    public static final int COLUMNA_MONTO = 2;
-    public static final int COLUMNA_ETIQUETA = 3;
-    public static final int COLUMNA_FECHA = 4;
-    public static final int COLUMNA_DESCRIPCION = 5;
+
+    public static final int COLUMNA_ID = 1;
+    public static final int COLUMNA_RECIBO = 2;
+    public static final int COLUMNA_FECHA = 3;
+    public static final int COLUMNA_NOMBRE = 4;
+    public static final int COLUMNA_VALOR = 5;
+
+
+    public static final int COLUMNA_TIPOFA = 6;
+    public static final int COLUMNA_CLAVE = 7;
+    public static final int COLUMNA_ABONADO = 8;
+    public static final int COLUMNA_DIRECCION = 9;
+    public static final int COLUMNA_CLICLO = 10;
+
 
     public SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -339,18 +346,32 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         // Encontrar datos obsoletos
         String id;
-        int monto;
+        int recibo;
         String etiqueta;
         String fecha;
         String descripcion;
         while (c.moveToNext()) {
             syncResult.stats.numEntries++;
 
-            id = c.getString(COLUMNA_ID_REMOTA);
-            monto = c.getInt(COLUMNA_MONTO);
-            etiqueta = c.getString(COLUMNA_ETIQUETA);
-            fecha = c.getString(COLUMNA_FECHA);
-            descripcion = c.getString(COLUMNA_DESCRIPCION);
+            id = c.getString(COLUMNA_ID);
+            recibo = c.getInt(COLUMNA_RECIBO);
+            fecha = c.getString(COLUMNA_ETIQUETA);
+            nombre = c.getString(COLUMNA_FECHA);
+            valor = c.getString(COLUMNA_DESCRIPCION);
+
+            public static final int COLUMNA_ID = 1;
+            public static final int COLUMNA_RECIBO = 2;
+            public static final int COLUMNA_FECHA = 3;
+            public static final int COLUMNA_NOMBRE = 4;
+            public static final int COLUMNA_VALOR = 5;
+
+
+            public static final int COLUMNA_TIPOFA = 6;
+            public static final int COLUMNA_CLAVE = 7;
+            public static final int COLUMNA_ABONADO = 8;
+            public static final int COLUMNA_DIRECCION = 9;
+            public static final int COLUMNA_CLICLO = 10;
+
 
             Gasto match = expenseMap.get(id);
 
