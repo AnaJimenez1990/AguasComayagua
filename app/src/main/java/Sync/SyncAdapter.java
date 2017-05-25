@@ -23,9 +23,10 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.gson.gson;
-import com.example.informatica2.aguascomayagua.utils.Utilidades;
-import com.example.informatica2.aguascomayagua.utils.Constantes;
+import com.google.gson.Gson;
+
+import utils.utilidades;
+import utils.constantes;
 import com.example.informatica2.aguascomayagua.R;
 import provider.facturacion;
 import web.Facturacion;
@@ -49,39 +50,39 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = SyncAdapter.class.getSimpleName();
 
     ContentResolver resolver;
-   // private gson gson = new gson();
+
+   private Gson gson = new Gson();
 
     /**
      * Proyección para las consultas
      */
     private static final String[] PROJECTION = new String[]{
-                    facturacion.Columnas.id ,
-                    facturacion.Columnas.recibo,
-                    facturacion.Columnas.fecha,
-                    facturacion.Columnas.vence,
-                    facturacion.Columnas.nombre,
-                    facturacion.Columnas.valor,
-                    facturacion.Columnas.tipofa,
-                    facturacion.Columnas.clave,
-                    facturacion.Columnas.abonado,
-                    facturacion.Columnas.direccion,
-                    facturacion.Columnas.ciclo
+            facturacion.Columnas.id,
+            facturacion.Columnas.ID_REMOTA,
+            facturacion.Columnas.recibo,
+            facturacion.Columnas.fecha,
+            facturacion.Columnas.vence,
+            facturacion.Columnas.nombre,
+            facturacion.Columnas.valor,
+            facturacion.Columnas.tipofa,
+            facturacion.Columnas.clave,
+            facturacion.Columnas.abonado,
+            facturacion.Columnas.direccion,
+            facturacion.Columnas.ciclo
     };
 
     // Indices para las columnas indicadas en la proyección
-
-    public static final int COLUMNA_ID = 1;
-    public static final int COLUMNA_RECIBO = 2;
-    public static final int COLUMNA_FECHA = 3;
-    public static final int COLUMNA_NOMBRE = 4;
-    public static final int COLUMNA_VALOR = 5;
-
-
-    public static final int COLUMNA_TIPOFA = 6;
-    public static final int COLUMNA_CLAVE = 7;
-    public static final int COLUMNA_ABONADO = 8;
-    public static final int COLUMNA_DIRECCION = 9;
-    public static final int COLUMNA_CLICLO = 10;
+    public static final int COLUMNA_ID_REMOTA = 1;
+    public static final int COLUMNA_ID = 2;
+    public static final int COLUMNA_RECIBO = 3;
+    public static final int COLUMNA_FECHA = 4;
+    public static final int COLUMNA_NOMBRE = 5;
+    public static final int COLUMNA_VALOR = 6;
+    public static final int COLUMNA_TIPOFA = 7;
+    public static final int COLUMNA_CLAVE = 8;
+    public static final int COLUMNA_ABONADO = 9;
+    public static final int COLUMNA_DIRECCION = 10;
+    public static final int COLUMNA_CLICLO = 11;
 
 
     public SyncAdapter(Context context, boolean autoInitialize) {
@@ -107,6 +108,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account,
                               Bundle extras,
+
                               String authority,
                               ContentProviderClient provider,
                               final SyncResult syncResult) {
@@ -128,7 +130,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         VolleySingleton.getInstance(getContext()).addToRequestQueue(
                 new JsonObjectRequest(
                         Request.Method.GET,
-                        Constantes.GET_URL,
+                        constantes.GET_URL,
                         new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
@@ -154,14 +156,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void procesarRespuestaGet(JSONObject response, SyncResult syncResult) {
         try {
             // Obtener atributo "estado"
-            String estado = response.getString(Constantes.ESTADO);
+            String estado = response.getString(constantes.ESTADO);
 
             switch (estado) {
-                case Constantes.SUCCESS: // EXITO
+                case constantes.SUCCESS: // EXITO
                     actualizarDatosLocales(response, syncResult);
                     break;
-                case Constantes.FAILED: // FALLIDO
-                    String mensaje = response.getString(Constantes.MENSAJE);
+                case constantes.FAILED: // FALLIDO
+                    String mensaje = response.getString(constantes.MENSAJE);
                     Log.i(TAG, mensaje);
                     break;
             }
@@ -187,12 +189,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 VolleySingleton.getInstance(getContext()).addToRequestQueue(
                         new JsonObjectRequest(
                                 Request.Method.POST,
-                                Constantes.INSERT_URL,
-                                Utilidades.deCursorAJSONObject(c),
+                                constantes.INSERT_URL,
+                                utilidades.deCursorAJSONObject(c),
                                 new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        procesarRespuestaInsert(response, idLocal);
+                                      procesarRespuestaInsert(response, idLocal);
                                     }
                                 },
                                 new Response.ErrorListener() {
@@ -231,26 +233,26 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
      *
      * @return Cursor con el registro.
      */
-    private Cursor obtenerRegistrosSucios() {
-        Uri uri = ContractParaGastos.CONTENT_URI;
-        String selection = ContractParaGastos.Columnas.PENDIENTE_INSERCION + "=? AND "
-                + ContractParaGastos.Columnas.ESTADO + "=?";
-        String[] selectionArgs = new String[]{"1", ContractParaGastos.ESTADO_SYNC + ""};
+   private Cursor obtenerRegistrosSucios() {
+        Uri uri = facturacion.CONTENT_URI;
+        String selection = facturacion.Columnas.PENDIENTE_INSERCION + "=? AND "
+                + facturacion.Columnas.ESTADO + "=?";
+        String[] selectionArgs = new String[]{"1", facturacion.ESTADO_SYNC + ""};
 
         return resolver.query(uri, PROJECTION, selection, selectionArgs, null);
     }
-
+//
     /**
      * Cambia a estado "de sincronización" el registro que se acaba de insertar localmente
      */
     private void iniciarActualizacion() {
-        Uri uri = ContractParaGastos.CONTENT_URI;
-        String selection = ContractParaGastos.Columnas.PENDIENTE_INSERCION + "=? AND "
-                + ContractParaGastos.Columnas.ESTADO + "=?";
-        String[] selectionArgs = new String[]{"1", ContractParaGastos.ESTADO_OK + ""};
+        Uri uri = facturacion.CONTENT_URI;
+        String selection = facturacion.Columnas.PENDIENTE_INSERCION + "=? AND "
+                + facturacion.Columnas.ESTADO + "=?";
+        String[] selectionArgs = new String[]{"1", facturacion.ESTADO_OK + ""};
 
         ContentValues v = new ContentValues();
-        v.put(ContractParaGastos.Columnas.ESTADO, ContractParaGastos.ESTADO_SYNC);
+        v.put(facturacion.Columnas.ESTADO, facturacion.ESTADO_SYNC);
 
         int results = resolver.update(uri, v, selection, selectionArgs);
         Log.i(TAG, "Registros puestos en cola de inserción:" + results);
@@ -262,15 +264,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
      *
      * @param idRemota id remota
      */
-    private void finalizarActualizacion(String idRemota, int idLocal) {
-        Uri uri = ContractParaGastos.CONTENT_URI;
-        String selection = ContractParaGastos.Columnas._ID + "=?";
+   private void finalizarActualizacion(String idRemota, int idLocal) {
+        Uri uri = facturacion.CONTENT_URI;
+        String selection = facturacion.Columnas._ID + "=?";
         String[] selectionArgs = new String[]{String.valueOf(idLocal)};
 
         ContentValues v = new ContentValues();
-        v.put(ContractParaGastos.Columnas.PENDIENTE_INSERCION, "0");
-        v.put(ContractParaGastos.Columnas.ESTADO, ContractParaGastos.ESTADO_OK);
-        v.put(ContractParaGastos.Columnas.ID_REMOTA, idRemota);
+        v.put(facturacion.Columnas.PENDIENTE_INSERCION, "0");
+        v.put(facturacion.Columnas.ESTADO, facturacion.ESTADO_OK);
+        v.put(facturacion.Columnas.ID_REMOTA, idRemota);
 
         resolver.update(uri, v, selection, selectionArgs);
     }
@@ -284,19 +286,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             // Obtener estado
-            String estado = response.getString(Constantes.ESTADO);
+            String estado = response.getString(constantes.ESTADO);
             // Obtener mensaje
-            String mensaje = response.getString(Constantes.MENSAJE);
+            String mensaje = response.getString(constantes.MENSAJE);
             // Obtener identificador del nuevo registro creado en el servidor
-            String idRemota = response.getString(Constantes.ID_GASTO);
+            String idRemota = response.getString(constantes.ID_FACTURACION);
 
             switch (estado) {
-                case Constantes.SUCCESS:
+                case constantes.SUCCESS:
                     Log.i(TAG, mensaje);
                     finalizarActualizacion(idRemota, idLocal);
                     break;
 
-                case Constantes.FAILED:
+                case constantes.FAILED:
                     Log.i(TAG, mensaje);
                     break;
             }
@@ -319,7 +321,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             // Obtener array "gastos"
-            facturacion = response.getJSONArray(facturacion.facturacion);
+            facturacion = response.getJSONArray(provider.facturacion.facturacion);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -331,14 +333,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 
         // Tabla hash para recibir las entradas entrantes
-        HashMap<String, Gasto> expenseMap = new HashMap<String, Gasto>();
-        for (Gasto e : data) {
-            expenseMap.put(e.idGasto, e);
+        HashMap<String, facturacion> expenseMap = new HashMap<String, facturacion>();
+        for (Facturacion e : data) {
+            expenseMap.put(e,idfacturacion,e);
         }
 
         // Consultar registros remotos actuales
-        Uri uri = ContractParaGastos.CONTENT_URI;
-        String select = ContractParaGastos.Columnas.ID_REMOTA + " IS NOT NULL";
+        Uri uri = provider.facturacion.CONTENT_URI;
+        String select = provider.facturacion.Columnas.ID_REMOTA + " IS NOT NULL";
         Cursor c = resolver.query(uri, PROJECTION, select, null, null);
         assert c != null;
 
@@ -346,57 +348,49 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         // Encontrar datos obsoletos
         String id;
-        int recibo;
-        String etiqueta;
+        int valor;
+        String nombre;
         String fecha;
-        String descripcion;
+        String tipofa;
+        int clave;
+        String abonado;
+        String direccion;
+        int ciclo;
+
+
         while (c.moveToNext()) {
             syncResult.stats.numEntries++;
 
-            id = c.getString(COLUMNA_ID);
-            recibo = c.getInt(COLUMNA_RECIBO);
-            fecha = c.getString(COLUMNA_ETIQUETA);
-            nombre = c.getString(COLUMNA_FECHA);
-            valor = c.getString(COLUMNA_DESCRIPCION);
+            id = c.getString(COLUMNA_ID_REMOTA);
 
-            public static final int COLUMNA_ID = 1;
-            public static final int COLUMNA_RECIBO = 2;
-            public static final int COLUMNA_FECHA = 3;
-            public static final int COLUMNA_NOMBRE = 4;
-            public static final int COLUMNA_VALOR = 5;
+            fecha = c.getString(COLUMNA_FECHA);
+            nombre = c.getString(COLUMNA_NOMBRE);
+            valor = c.getInt(COLUMNA_VALOR);
 
-
-            public static final int COLUMNA_TIPOFA = 6;
-            public static final int COLUMNA_CLAVE = 7;
-            public static final int COLUMNA_ABONADO = 8;
-            public static final int COLUMNA_DIRECCION = 9;
-            public static final int COLUMNA_CLICLO = 10;
-
-
-            Gasto match = expenseMap.get(id);
+            facturacion match = expenseMap.get(id);
 
             if (match != null) {
                 // Esta entrada existe, por lo que se remueve del mapeado
                 expenseMap.remove(id);
 
-                Uri existingUri = ContractParaGastos.CONTENT_URI.buildUpon()
+                Uri existingUri = provider.facturacion.CONTENT_URI.buildUpon()
                         .appendPath(id).build();
 
                 // Comprobar si el gasto necesita ser actualizado
-                boolean b = match.monto != monto;
-                boolean b1 = match.etiqueta != null && !match.etiqueta.equals(etiqueta);
+               boolean b = match.valor != valor;
+
                 boolean b2 = match.fecha != null && !match.fecha.equals(fecha);
-                boolean b3 = match.descripcion != null && !match.descripcion.equals(descripcion);
+                boolean b3 = match.nombre != null && !match.nombre.equals(nombre);
 
                 if (b || b1 || b2 || b3) {
 
                     Log.i(TAG, "Programando actualización de: " + existingUri);
 
                     ops.add(ContentProviderOperation.newUpdate(existingUri)
-                            .withValue(ContractParaGastos.Columnas.MONTO, match.monto)
-                            .withValue(ContractParaGastos.Columnas.ETIQUETA, match.etiqueta)
-                            .withValue(ContractParaGastos.Columnas.FECHA, match.fecha)
-                            .withValue(ContractParaGastos.Columnas.DESCRIPCION, match.descripcion)
+                            .withValue(facturacion.Columnas.ID, match.id)
+                            .withValue(facturacion.Columnas.VALOR, match.valor)
+                            .withValue(facturacion.Columnas.FECHA, match.fecha)
+                            .withValue(facturacion.Columnas.NOMBRE, match.nombre)
                             .build());
                     syncResult.stats.numUpdates++;
                 } else {
@@ -404,7 +398,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             } else {
                 // Debido a que la entrada no existe, es removida de la base de datos
-                Uri deleteUri = ContractParaGastos.CONTENT_URI.buildUpon()
+                Uri deleteUri = provider.facturacion.CONTENT_URI.buildUpon()
                         .appendPath(id).build();
                 Log.i(TAG, "Programando eliminación de: " + deleteUri);
                 ops.add(ContentProviderOperation.newDelete(deleteUri).build());
@@ -413,15 +407,15 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
         c.close();
 
-        // Insertar items resultantes
-        for (Gasto e : expenseMap.values()) {
-            Log.i(TAG, "Programando inserción de: " + e.idGasto);
-            ops.add(ContentProviderOperation.newInsert(ContractParaGastos.CONTENT_URI)
-                    .withValue(ContractParaGastos.Columnas.ID_REMOTA, e.idGasto)
-                    .withValue(ContractParaGastos.Columnas.MONTO, e.monto)
-                    .withValue(ContractParaGastos.Columnas.ETIQUETA, e.etiqueta)
-                    .withValue(ContractParaGastos.Columnas.FECHA, e.fecha)
-                    .withValue(ContractParaGastos.Columnas.DESCRIPCION, e.descripcion)
+        Insertar items resultantes
+        for (facturacion e : expenseMap.values()) {
+            Log.i(TAG, "Programando inserción de: " + e.idfacturacion);
+            ops.add(ContentProviderOperation.newInsert(facturacion.CONTENT_URI)
+                    .withValue(facturacion.Columnas.ID_REMOTA, e.idfacturacion)
+                    .withValue(facturacion.Columnas.VALOR, e.valor)
+                    .withValue(facturacion.Columnas.ETIQUETA, e.nombre)
+                    .withValue(facturacion.Columnas.FECHA, e.fecha)
+
                     .build());
             syncResult.stats.numInserts++;
         }
@@ -431,12 +425,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 syncResult.stats.numDeletes > 0) {
             Log.i(TAG, "Aplicando operaciones...");
             try {
-                resolver.applyBatch(ContractParaGastos.AUTHORITY, ops);
+                resolver.applyBatch(provider.facturacion.AUTHORITY, ops);
             } catch (RemoteException | OperationApplicationException e) {
                 e.printStackTrace();
             }
             resolver.notifyChange(
-                    ContractParaGastos.CONTENT_URI,
+                    provider.facturacion.CONTENT_URI,
                     null,
                     false);
             Log.i(TAG, "Sincronización finalizada.");
@@ -477,7 +471,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         // Crear cuenta por defecto
         Account newAccount = new Account(
-                context.getString(R.string.app_name), Constantes.ACCOUNT_TYPE);
+                context.getString(R.string.app_name),constantes.ACCOUNT_TYPE);
 
         // Comprobar existencia de la cuenta
         if (null == accountManager.getPassword(newAccount)) {

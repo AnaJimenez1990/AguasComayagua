@@ -58,6 +58,11 @@ public class facturacion {
     // Valores para la columna ESTADO
     public static final int ESTADO_OK = 0;
     public static final int ESTADO_SYNC = 1;
+    public int valor;
+    public Integer recibo;
+    public String fecha;
+    public String nombre;
+
 
 
     /**
@@ -65,22 +70,30 @@ public class facturacion {
      */
     public static class Columnas implements BaseColumns {
 
-        private Columnas() {
             // Sin instancias
-        }
-        public final static String id = "id";
-        public final static String recibo = "recibo";
-        public final static String fecha = "fecha";
-        public final static String vence = "Vence";
-        public final static String nombre = "nombre";
-        public final static String valor = "valor";
-        public final static String tipofa = "tipofa";
-        public final static String clave = "clave";
-        public final static String abonado = "abonado";
-        public final static String direccion = "direccion";
-        public final static String ciclo = "ciclo";
+            public static final String id = "id";
+            public static final String recibo = "recibo";
+            public static final String fecha = "fecha";
+            public final static String vence = "Vence";
+            public final static String nombre = "nombre";
+            public final static String valor = "valor";
+            public final static String tipofa = "tipofa";
+            public final static String clave = "clave";
+            public final static String abonado = "abonado";
+            public final static String direccion = "direccion";
+            public final static String ciclo = "ciclo";
 
 
+        public static String PENDIENTE_INSERCION;
+        public static final String ESTADO = "estado";
+        public static final String ID_REMOTA = "idRemota";
+    }
     }
 
-    }
+
+
+
+
+
+
+
