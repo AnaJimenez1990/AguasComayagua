@@ -335,6 +335,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         // Tabla hash para recibir las entradas entrantes
         HashMap<String, facturacion> expenseMap = new HashMap<String, facturacion>();
         for (Facturacion e : data) {
+
             expenseMap.put(e,idfacturacion,e);
         }
 
@@ -349,6 +350,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         // Encontrar datos obsoletos
         String id;
         int valor;
+        int recibo;
         String nombre;
         String fecha;
         String tipofa;
@@ -362,10 +364,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             syncResult.stats.numEntries++;
 
             id = c.getString(COLUMNA_ID_REMOTA);
-
+            recibo = c.getString(COLUMNA_RECIBO
             fecha = c.getString(COLUMNA_FECHA);
             nombre = c.getString(COLUMNA_NOMBRE);
             valor = c.getInt(COLUMNA_VALOR);
+
 
             facturacion match = expenseMap.get(id);
 
@@ -378,7 +381,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                 // Comprobar si el gasto necesita ser actualizado
                boolean b = match.valor != valor;
-
+                boolean b1 = match.recibo != null && !match.recibo.equals(recibo);
                 boolean b2 = match.fecha != null && !match.fecha.equals(fecha);
                 boolean b3 = match.nombre != null && !match.nombre.equals(nombre);
 
@@ -388,6 +391,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                     ops.add(ContentProviderOperation.newUpdate(existingUri)
                             .withValue(facturacion.Columnas.ID, match.id)
+                            .withValue(facturacion.Columnas.ID, match.recibo)
                             .withValue(facturacion.Columnas.VALOR, match.valor)
                             .withValue(facturacion.Columnas.FECHA, match.fecha)
                             .withValue(facturacion.Columnas.NOMBRE, match.nombre)
@@ -407,7 +411,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
         c.close();
 
-        Insertar items resultantes
+       // Insertar items resultantes
         for (facturacion e : expenseMap.values()) {
             Log.i(TAG, "Programando inserción de: " + e.idfacturacion);
             ops.add(ContentProviderOperation.newInsert(facturacion.CONTENT_URI)
