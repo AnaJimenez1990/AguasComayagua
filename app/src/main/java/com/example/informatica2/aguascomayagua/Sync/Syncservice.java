@@ -1,4 +1,4 @@
-package Sync;
+package com.example.informatica2.aguascomayagua.Sync;
 
 /**
  * Created by Informatica 2 on 25/5/2017.

@@ -1,4 +1,4 @@
-package web;
+package com.example.informatica2.aguascomayagua.web;
 
 /**
  * Created by Informatica 2 on 24/5/2017.

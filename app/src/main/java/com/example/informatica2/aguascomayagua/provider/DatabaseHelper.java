@@ -1,11 +1,9 @@
-package provider;
+package com.example.informatica2.aguascomayagua.provider;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import provider.facturacion;
 
 
 /**

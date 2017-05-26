@@ -1,4 +1,4 @@
-package Sync;
+package com.example.informatica2.aguascomayagua.Sync;
 
 /**
  * Created by Informatica 2 on 24/5/2017.
@@ -25,12 +25,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 
-import utils.utilidades;
-import utils.constantes;
+import com.example.informatica2.aguascomayagua.utils.utilidades;
+import com.example.informatica2.aguascomayagua.utils.constantes;
 import com.example.informatica2.aguascomayagua.R;
-import provider.facturacion;
-import web.Facturacion;
-import web.VolleySingleton;
+import com.example.informatica2.aguascomayagua.provider.facturacion;
+import com.example.informatica2.aguascomayagua.web.Facturacion;
+import com.example.informatica2.aguascomayagua.web.VolleySingleton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,7 +57,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
      * Proyección para las consultas
      */
     private static final String[] PROJECTION = new String[]{
-            facturacion.Columnas.id,
+            facturacion.Columnas._ID,
             facturacion.Columnas.ID_REMOTA,
             facturacion.Columnas.recibo,
             facturacion.Columnas.fecha,
@@ -72,17 +72,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     };
 
     // Indices para las columnas indicadas en la proyección
-    public static final int COLUMNA_ID_REMOTA = 1;
-    public static final int COLUMNA_ID = 2;
+    public static final int COLUMNA_ID = 1;
+    public static final int COLUMNA_ID_REMOTA = 2;
     public static final int COLUMNA_RECIBO = 3;
     public static final int COLUMNA_FECHA = 4;
     public static final int COLUMNA_NOMBRE = 5;
     public static final int COLUMNA_VALOR = 6;
-    public static final int COLUMNA_TIPOFA = 7;
-    public static final int COLUMNA_CLAVE = 8;
-    public static final int COLUMNA_ABONADO = 9;
-    public static final int COLUMNA_DIRECCION = 10;
-    public static final int COLUMNA_CLICLO = 11;
 
 
     public SyncAdapter(Context context, boolean autoInitialize) {
@@ -108,7 +103,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account,
                               Bundle extras,
-
                               String authority,
                               ContentProviderClient provider,
                               final SyncResult syncResult) {
@@ -125,7 +119,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void realizarSincronizacionLocal(final SyncResult syncResult) {
-        Log.i(TAG, "Actualizando el cliente.");
+        Log.i(TAG, "Actualizando la factura.");
 
         VolleySingleton.getInstance(getContext()).addToRequestQueue(
                 new JsonObjectRequest(
@@ -321,7 +315,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             // Obtener array "gastos"
-            facturacion = response.getJSONArray(provider.facturacion.facturacion);
+            facturacion = response.getJSONArray(com.example.informatica2.aguascomayagua.provider.facturacion.facturacion);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -333,15 +327,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 
         // Tabla hash para recibir las entradas entrantes
-        HashMap<String, facturacion> expenseMap = new HashMap<String, facturacion>();
+        HashMap<String, Facturacion> expenseMap = new HashMap <String, Facturacion>();
         for (Facturacion e : data) {
-
-            expenseMap.put(e,idfacturacion,e);
+            expenseMap.put(e,idfacturacion);
         }
 
         // Consultar registros remotos actuales
-        Uri uri = provider.facturacion.CONTENT_URI;
-        String select = provider.facturacion.Columnas.ID_REMOTA + " IS NOT NULL";
+        Uri uri = com.example.informatica2.aguascomayagua.provider.facturacion.CONTENT_URI;
+        String select = com.example.informatica2.aguascomayagua.provider.facturacion.Columnas.ID_REMOTA + " IS NOT NULL";
         Cursor c = resolver.query(uri, PROJECTION, select, null, null);
         assert c != null;
 
@@ -364,7 +357,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             syncResult.stats.numEntries++;
 
             id = c.getString(COLUMNA_ID_REMOTA);
-            recibo = c.getString(COLUMNA_RECIBO
+            recibo = c.getInt(COLUMNA_RECIBO);
             fecha = c.getString(COLUMNA_FECHA);
             nombre = c.getString(COLUMNA_NOMBRE);
             valor = c.getInt(COLUMNA_VALOR);
@@ -376,7 +369,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 // Esta entrada existe, por lo que se remueve del mapeado
                 expenseMap.remove(id);
 
-                Uri existingUri = provider.facturacion.CONTENT_URI.buildUpon()
+                Uri existingUri = com.example.informatica2.aguascomayagua.provider.facturacion.CONTENT_URI.buildUpon()
                         .appendPath(id).build();
 
                 // Comprobar si el gasto necesita ser actualizado
@@ -391,7 +384,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
                     ops.add(ContentProviderOperation.newUpdate(existingUri)
                             .withValue(facturacion.Columnas.ID, match.id)
-                            .withValue(facturacion.Columnas.ID, match.recibo)
+                            .withValue(facturacion.Columnas.RECIBO, match.recibo)
                             .withValue(facturacion.Columnas.VALOR, match.valor)
                             .withValue(facturacion.Columnas.FECHA, match.fecha)
                             .withValue(facturacion.Columnas.NOMBRE, match.nombre)
@@ -402,7 +395,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             } else {
                 // Debido a que la entrada no existe, es removida de la base de datos
-                Uri deleteUri = provider.facturacion.CONTENT_URI.buildUpon()
+                Uri deleteUri = com.example.informatica2.aguascomayagua.provider.facturacion.CONTENT_URI.buildUpon()
                         .appendPath(id).build();
                 Log.i(TAG, "Programando eliminación de: " + deleteUri);
                 ops.add(ContentProviderOperation.newDelete(deleteUri).build());
@@ -415,11 +408,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         for (facturacion e : expenseMap.values()) {
             Log.i(TAG, "Programando inserción de: " + e.idfacturacion);
             ops.add(ContentProviderOperation.newInsert(facturacion.CONTENT_URI)
-                    .withValue(facturacion.Columnas.ID_REMOTA, e.idfacturacion)
+                    .withValue(facturacion.Columnas.ID_REMOTA, e.id)
                     .withValue(facturacion.Columnas.VALOR, e.valor)
                     .withValue(facturacion.Columnas.ETIQUETA, e.nombre)
                     .withValue(facturacion.Columnas.FECHA, e.fecha)
-
                     .build());
             syncResult.stats.numInserts++;
         }
@@ -429,12 +421,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 syncResult.stats.numDeletes > 0) {
             Log.i(TAG, "Aplicando operaciones...");
             try {
-                resolver.applyBatch(provider.facturacion.AUTHORITY, ops);
+                resolver.applyBatch(com.example.informatica2.aguascomayagua.provider.facturacion.AUTHORITY, ops);
             } catch (RemoteException | OperationApplicationException e) {
                 e.printStackTrace();
             }
             resolver.notifyChange(
-                    provider.facturacion.CONTENT_URI,
+                    com.example.informatica2.aguascomayagua.provider.facturacion.CONTENT_URI,
                     null,
                     false);
             Log.i(TAG, "Sincronización finalizada.");

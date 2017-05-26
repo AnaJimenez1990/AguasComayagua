@@ -1,4 +1,4 @@
-package utils;
+package com.example.informatica2.aguascomayagua.utils;
 
 /**
  * Created by Informatica 2 on 25/5/2017.
@@ -7,13 +7,10 @@ import android.database.Cursor;
 import android.os.Build;
 import android.util.Log;
 
-import provider.facturacion;
-import web.Facturacion;
+import com.example.informatica2.aguascomayagua.provider.facturacion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import static provider.facturacion.Columnas.id;
 
 public class utilidades {
     // Indices para las columnas indicadas en la proyección

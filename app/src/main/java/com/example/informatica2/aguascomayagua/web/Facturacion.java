@@ -1,10 +1,12 @@
-package web;
+package com.example.informatica2.aguascomayagua.web;
+
+import com.example.informatica2.aguascomayagua.provider.facturacion;
 
 /**
  * Created by Informatica 2 on 24/5/2017.
  */
 
-public class Facturacion {
+public class Facturacion extends com.example.informatica2.aguascomayagua.provider.facturacion {
     public String idfacturacion ;
     public int valor ;
     public int codigo ;

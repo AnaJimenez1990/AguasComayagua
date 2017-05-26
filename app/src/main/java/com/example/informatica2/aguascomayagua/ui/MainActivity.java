@@ -1,4 +1,4 @@
-package com.example.informatica2.aguascomayagua;
+package com.example.informatica2.aguascomayagua.ui;
 
 
 import android.support.v7.app.AppCompatActivity;

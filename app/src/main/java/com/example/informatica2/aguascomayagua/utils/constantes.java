@@ -1,6 +1,4 @@
-package utils;
-
-import web.Facturacion;
+package com.example.informatica2.aguascomayagua.utils;
 
 /**
  * Created by Informatica 2 on 24/5/2017.

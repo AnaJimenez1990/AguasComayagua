@@ -1,4 +1,4 @@
-package provider;
+package com.example.informatica2.aguascomayagua.provider;
 
 /**
  * Created by Informatica 2 on 23/5/2017.
@@ -69,6 +69,9 @@ public class facturacion {
      * Estructura de la tabla
      */
     public static class Columnas implements BaseColumns {
+        private Columnas() {
+
+        }
 
             // Sin instancias
             public static final String id = "id";
