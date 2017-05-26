@@ -18,7 +18,7 @@ public class providerFacturacion extends ContentProvider {
     /**
      * Nombre de la base de datos
      */
-    private static final String DATABASE_NAME = "AguasComayagua";
+    private static final String DATABASE_NAME = "AguasComayagua.db";
     /**
      * Versión actual de la base de datos
      */
@@ -35,7 +35,10 @@ public class providerFacturacion extends ContentProvider {
     @Override
     public boolean onCreate() {
         // Inicializando gestor BD
-        databaseHelper = new DatabaseHelper(getContext(), DATABASE_NAME, null,
+        databaseHelper = new DatabaseHelper(
+                getContext(),
+                DATABASE_NAME,
+                null,
                 DATABASE_VERSION
         );
 
@@ -55,29 +58,29 @@ public class providerFacturacion extends ContentProvider {
         // Obtener base de datos
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         // Comparar Uri
-        int match = facturacion.uriMatcher.match(uri);
+        int match = ctfacturacion.uriMatcher.match(uri);
 
         Cursor c;
 
         switch (match) {
-            case facturacion.ALLROWS:
+            case ctfacturacion.ALLROWS:
                 // Consultando todos los registros
-                c = db.query(facturacion.facturacion, projection,
+                c = db.query(ctfacturacion.FACTURACION, projection,
                         selection, selectionArgs,
                         null, null, sortOrder);
                 c.setNotificationUri(
                         resolver,
-                        facturacion.CONTENT_URI);
+                        ctfacturacion.CONTENT_URI);
                 break;
-            case facturacion.SINGLE_ROW:
+            case ctfacturacion.SINGLE_ROW:
                 // Consultando un solo registro basado en el Id del Uri
                 long idfacturacion = ContentUris.parseId(uri);
-                c = db.query(facturacion.facturacion, projection,
-                        facturacion.Columnas._ID + " = " + idfacturacion,
+                c = db.query(ctfacturacion.FACTURACION, projection,
+                        ctfacturacion.Columnas._ID + " = " + idfacturacion,
                         selectionArgs, null, null, sortOrder);
                 c.setNotificationUri(
                         resolver,
-                        facturacion.CONTENT_URI);
+                        ctfacturacion.CONTENT_URI);
                 break;
             default:
                 throw new IllegalArgumentException("URI no soportada: " + uri);
@@ -88,11 +91,11 @@ public class providerFacturacion extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        switch (facturacion.uriMatcher.match(uri)) {
-            case facturacion.ALLROWS:
-                return facturacion.MULTIPLE_MIME;
-            case facturacion.SINGLE_ROW:
-                return facturacion.SINGLE_MIME;
+        switch (ctfacturacion.uriMatcher.match(uri)) {
+            case ctfacturacion.ALLROWS:
+                return ctfacturacion.MULTIPLE_MIME;
+            case ctfacturacion.SINGLE_ROW:
+                return ctfacturacion.SINGLE_MIME;
             default:
                 throw new IllegalArgumentException("Tipo de gasto desconocido: " + uri);
         }
@@ -101,7 +104,7 @@ public class providerFacturacion extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         // Validar la uri
-        if (facturacion.uriMatcher.match(uri) != facturacion.ALLROWS) {
+        if (ctfacturacion.uriMatcher.match(uri) != ctfacturacion.ALLROWS) {
             throw new IllegalArgumentException("URI desconocida : " + uri);
         }
         ContentValues contentValues;
@@ -113,10 +116,10 @@ public class providerFacturacion extends ContentProvider {
 
         // Inserción de nueva fila
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        long rowId = db.insert(facturacion.facturacion, null, contentValues);
+        long rowId = db.insert(ctfacturacion.FACTURACION, null, contentValues);
         if (rowId > 0) {
             Uri uri_facturacion = ContentUris.withAppendedId(
-                    facturacion.CONTENT_URI, rowId);
+                    ctfacturacion.CONTENT_URI, rowId);
             resolver.notifyChange(uri_facturacion, null, false);
             return uri_facturacion;
         }
@@ -128,19 +131,19 @@ public class providerFacturacion extends ContentProvider {
 
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-        int match = facturacion.uriMatcher.match(uri);
+        int match = ctfacturacion.uriMatcher.match(uri);
         int affected;
 
         switch (match) {
-            case facturacion.ALLROWS:
-                affected = db.delete(facturacion.facturacion,
+            case ctfacturacion.ALLROWS:
+                affected = db.delete(ctfacturacion.FACTURACION,
                         selection,
                         selectionArgs);
                 break;
-            case facturacion.SINGLE_ROW:
-                long idfacturacion = ContentUris.parseId(uri);
-                affected = db.delete(facturacion.facturacion,
-                        facturacion.Columnas.id+ "=" + idfacturacion
+            case ctfacturacion.SINGLE_ROW:
+                long idFacturacion = ContentUris.parseId(uri);
+                affected = db.delete(ctfacturacion.FACTURACION,
+                        ctfacturacion.Columnas.ID_REMOTA+ "=" + idFacturacion
                                 + (!TextUtils.isEmpty(selection) ?
                                 " AND (" + selection + ')' : ""),
                         selectionArgs);
@@ -160,15 +163,15 @@ public class providerFacturacion extends ContentProvider {
 
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         int affected;
-        switch (facturacion.uriMatcher.match(uri)) {
-            case facturacion.ALLROWS:
-                affected = db.update(facturacion.facturacion, values,
+        switch (ctfacturacion.uriMatcher.match(uri)) {
+            case ctfacturacion.ALLROWS:
+                affected = db.update(ctfacturacion.FACTURACION, values,
                         selection, selectionArgs);
                 break;
-            case facturacion.SINGLE_ROW:
+            case ctfacturacion.SINGLE_ROW:
                 String idfacturacion = uri.getPathSegments().get(1);
-                affected = db.update(facturacion.facturacion, values,
-                        facturacion.Columnas.id + "=" + idfacturacion
+                affected = db.update(ctfacturacion.FACTURACION, values,
+                        ctfacturacion.Columnas.ID_REMOTA + "=" + idfacturacion
                                 + (!TextUtils.isEmpty(selection) ?
                                 " AND (" + selection + ')' : ""),
                         selectionArgs);

@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 
-public class facturacion {
+public class ctfacturacion {
 
     /**
      * Autoridad del Content Provider
@@ -18,22 +18,22 @@ public class facturacion {
     /**
      * Representación de la tabla a consultar
      */
-    public static final String facturacion = "facturacion";
+    public static final String FACTURACION = "facturacion";
     /**
      * Tipo MIME que retorna la consulta de una sola fila
      */
     public final static String SINGLE_MIME =
-            "vnd.android.cursor.item/vnd." + AUTHORITY + facturacion;
+            "vnd.android.cursor.item/vnd." + AUTHORITY + FACTURACION;
     /**
      * Tipo MIME que retorna la consulta de {@link }
      */
     public final static String MULTIPLE_MIME =
-            "vnd.android.cursor.dir/vnd." + AUTHORITY + facturacion;
+            "vnd.android.cursor.dir/vnd." + AUTHORITY + FACTURACION;
     /**
      * URI de contenido principal
      */
     public final static Uri CONTENT_URI =
-            Uri.parse("content://" + AUTHORITY + "/" + facturacion);
+            Uri.parse("content://" + AUTHORITY + "/" + FACTURACION);
     /**
      * Comparador de URIs de contenido
      */
@@ -51,17 +51,13 @@ public class facturacion {
     // Asignación de URIs
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(AUTHORITY, facturacion, ALLROWS);
-        uriMatcher.addURI(AUTHORITY, facturacion + "/#", SINGLE_ROW);
+        uriMatcher.addURI(AUTHORITY, FACTURACION, ALLROWS);
+        uriMatcher.addURI(AUTHORITY, FACTURACION + "/#", SINGLE_ROW);
     }
 
     // Valores para la columna ESTADO
     public static final int ESTADO_OK = 0;
     public static final int ESTADO_SYNC = 1;
-    public int valor;
-    public Integer recibo;
-    public String fecha;
-    public String nombre;
 
 
 
@@ -75,19 +71,11 @@ public class facturacion {
 
             // Sin instancias
             public static final String id = "id";
-            public static final String recibo = "recibo";
-            public static final String fecha = "fecha";
-            public final static String vence = "Vence";
             public final static String nombre = "nombre";
             public final static String valor = "valor";
-            public final static String tipofa = "tipofa";
-            public final static String clave = "clave";
-            public final static String abonado = "abonado";
-            public final static String direccion = "direccion";
-            public final static String ciclo = "ciclo";
+        public final static String fecha = "fecha";
 
-
-        public static String PENDIENTE_INSERCION;
+        public static String PENDIENTE_INSERCION = "pendiente_insercion";;
         public static final String ESTADO = "estado";
         public static final String ID_REMOTA = "idRemota";
     }

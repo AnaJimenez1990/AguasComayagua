@@ -67,12 +67,12 @@ public class facturacion extends AppCompatActivity implements DatePickerDialog.O
 
 
         ContentValues values = new ContentValues();
-        values.put(facturacion.Columnas.VALOR, valorText);
-        values.put(facturacion.Columnas.NOMBRE, nombreText);
+        values.put(ctfacturacion.Columnas.VALOR, valorText);
+        values.put(ctfacturacion.Columnas.NOMBRE, nombreText);
         values.put(facturacion.Columnas.FECHA, fechaText);
         values.put(facturacion.Columnas.PENDIENTE_INSERCION, 1);
 
-        getContentResolver().insert(facturacion.CONTENT_URI, values);
+        getContentResolver().insert(ctfacturacion.CONTENT_URI, values);
         SyncAdapter.sincronizarAhora(this, true);
 
         if (utilidades.materialDesign())

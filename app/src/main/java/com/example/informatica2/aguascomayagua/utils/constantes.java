@@ -25,7 +25,7 @@ public class constantes {
     /**
      * Campos de las respuestas Json
      */
-    public static final String ID_FACTURACION = "idfacturacion";
+    public static final String ID_FACTURACION = "idFacturacion";
     public static final String ESTADO = "estado";
     public static final String VALOR = "valor";
     public static final String MENSAJE = "mensaje";

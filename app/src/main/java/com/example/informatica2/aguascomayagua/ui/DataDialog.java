@@ -13,7 +13,7 @@ import android.support.v4.app.DialogFragment;
 
 import java.util.Calendar;
 
-public class DateDialog extends DialogFragment {
+public class DataDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -31,4 +31,6 @@ public class DateDialog extends DialogFragment {
                 month + 1,
                 day);
     }
+
+
 }

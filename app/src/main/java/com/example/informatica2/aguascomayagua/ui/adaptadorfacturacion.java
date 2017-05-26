@@ -48,7 +48,7 @@ public class adaptadorfacturacion extends RecyclerView.Adapter<Adaptadorfacturac
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_layout, viewGroup, false);
+                .inflate(R.layout.facturacion, viewGroup, false);
         return new ViewHolder(v);
     }
 

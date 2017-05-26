@@ -28,20 +28,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      *
      * @param database Instancia de la base de datos
      */
-    private void createTable(SQLiteDatabase database) {
-        String cmd = "CREATE TABLE " + facturacion.facturacion + " (" +
-                facturacion.Columnas._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                facturacion.Columnas.recibo + " TEXT, " +
-                facturacion.Columnas.fecha + " TEXT, " +
-        facturacion.Columnas.vence + " TEXT, " +
-        facturacion.Columnas.nombre + " TEXT, " +
-        facturacion.Columnas.valor + " TEXT, " +
-        facturacion.Columnas.tipofa + " TEXT, " +
-                facturacion.Columnas.clave + " TEXT, " +
-                facturacion.Columnas.abonado + " TEXT, " +
-        facturacion.Columnas.direccion + " TEXT, " +
-                facturacion.Columnas.ciclo + " TEXT, " ;
-
+        private void createTable(SQLiteDatabase database) {
+        String cmd = "CREATE TABLE " + ctfacturacion.FACTURACION + " (" +
+                ctfacturacion.Columnas._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                ctfacturacion.Columnas.fecha + " TEXT, " +
+                ctfacturacion.Columnas.valor + " TEXT, " +
+                ctfacturacion.Columnas.nombre + " TEXT, ";
         database.execSQL(cmd);
 
     }
@@ -49,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        try { db.execSQL("drop table " + facturacion.facturacion); }
+        try { db.execSQL("drop table " + ctfacturacion.FACTURACION); }
         catch (SQLiteException e) { }
         onCreate(db);
     }

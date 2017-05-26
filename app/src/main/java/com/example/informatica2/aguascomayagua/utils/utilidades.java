@@ -7,23 +7,20 @@ import android.database.Cursor;
 import android.os.Build;
 import android.util.Log;
 
-import com.example.informatica2.aguascomayagua.provider.facturacion;
+import com.example.informatica2.aguascomayagua.provider.ctfacturacion;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class utilidades {
     // Indices para las columnas indicadas en la proyección
-    public static final int COLUMNA_ID = 1;
-    public static final int COLUMNA_RECIBO = 2;
-    public static final int COLUMNA_FECHA = 3;
-    public static final int COLUMNA_NOMBRE = 4;
-    public static final int COLUMNA_VALOR = 5;
-    public static final int COLUMNA_TIPOFA = 6;
-    public static final int COLUMNA_CLAVE = 7;
-    public static final int COLUMNA_ABONADO = 8;
-    public static final int COLUMNA_DIRECCION = 9;
-    public static final int COLUMNA_CLICLO = 10;
+    public static final int COLUMNA_ID = 0;
+    public static final int COLUMNA_ID_REMOTA = 1;
+    public static final int COLUMNA_FECHA = 2;
+    public static final int COLUMNA_NOMBRE = 3;
+    public static final int COLUMNA_VALOR = 4;
+
     /**
      * Determina si la aplicación corre en versiones superiores o iguales
      * a Android LOLLIPOP
@@ -43,40 +40,22 @@ public class utilidades {
      */
     public static JSONObject deCursorAJSONObject(Cursor c) {
         JSONObject jObject = new JSONObject();
-        int recibo;
-        int id;
+
         String fecha;
         String nombre;
-        int valor;
-        String tipofa;
-        int clave;
-        String abonado;
-        String direccion;
-        int ciclo;
+        String valor;
 
-        id = c.getInt(COLUMNA_ID);
-        recibo = c.getInt(COLUMNA_RECIBO);
+
         fecha = c.getString(COLUMNA_FECHA);
         nombre = c.getString(COLUMNA_NOMBRE);
-        valor = c.getInt(COLUMNA_VALOR);
-        tipofa = c.getString(COLUMNA_TIPOFA);
-        clave = c.getInt(COLUMNA_CLAVE);
-        abonado = c.getString(COLUMNA_ABONADO);
-        direccion= c.getString(COLUMNA_DIRECCION);
-        ciclo = c.getInt(COLUMNA_CLICLO);
+        valor = c.getString(COLUMNA_VALOR);
 
-        try
-        {
-            jObject.put(facturacion.Columnas.ID, id);
-            jObject.put(facturacion.Columnas.RECIBO, recibo);
-            jObject.put(facturacion.Columnas.FECHA, fecha);
-            jObject.put(facturacion.Columnas.NOMBRE, nombre);
-            jObject.put(facturacion.Columnas.VALOR, valor);
-            jObject.put(facturacion.Columnas.TIPOFA, tipofa);
-            jObject.put(facturacion.Columnas.CLAVE, clave);
-            jObject.put(facturacion.Columnas.ABONADO, abonado);
-            jObject.put(facturacion.Columnas.DIRECCION, direccion);
-            jObject.put(facturacion.Columnas.CICLO, ciclo);
+
+        try {
+            jObject.put(ctfacturacion.Columnas.fecha, fecha);
+            jObject.put(ctfacturacion.Columnas.nombre, nombre);
+            jObject.put(ctfacturacion.Columnas.valor, valor);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -84,4 +63,5 @@ public class utilidades {
         Log.i("Cursor a JSONObject", String.valueOf(jObject));
 
         return jObject;
+    }
 }
